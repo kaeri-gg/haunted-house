@@ -153,7 +153,7 @@ const door = new THREE.Mesh(
     })
 )
 
-// bushes
+// bushes    try
 const bushGeometry = new THREE.SphereGeometry(1, 16, 16)
 const bushMaterial = new THREE.MeshStandardMaterial({
     color: '#ccffcc',
