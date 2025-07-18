@@ -140,6 +140,7 @@ house.add(roof)
 const door = new THREE.Mesh(
     new THREE.PlaneGeometry(2.2, 2.2, 100, 100),
     new THREE.MeshStandardMaterial({
+        color: '#ccffcc',
         map: doorColorTexture,
         transparent: true,
         alphaMap: doorAlphaTexture,
@@ -153,7 +154,7 @@ const door = new THREE.Mesh(
     })
 )
 
-// bushes    try
+// bushes
 const bushGeometry = new THREE.SphereGeometry(1, 16, 16)
 const bushMaterial = new THREE.MeshStandardMaterial({
     color: '#ccffcc',
@@ -250,13 +251,25 @@ gui.add(floor.material, 'displacementBias').min(-1).max(1).step(0.001).name('flo
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight('#ffffff', 0.5)
+const ambientLight = new THREE.AmbientLight('#86cdff', 0.275)
 scene.add(ambientLight)
 
 // Directional light
-const directionalLight = new THREE.DirectionalLight('#ffffff', 1.5)
+const directionalLight = new THREE.DirectionalLight('#86cdff', 1)
 directionalLight.position.set(3, 2, -8)
 scene.add(directionalLight)
+
+// door light
+const doorLight = new THREE.PointLight('#ff7d46', 5)
+doorLight.position.set(0, 2.2, 2.5)
+house.add(doorLight)
+
+// ghost
+const ghost1 = new THREE.PointLight('#8800ff', 6)
+const ghost2 = new THREE.PointLight('#ff0088', 6)
+const ghost3 = new THREE.PointLight('#ff0000', 6)
+scene.add(ghost1, ghost2, ghost3)
+
 
 /**
  * Sizes
@@ -304,6 +317,26 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+// shadows
+renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
+// cast and receive
+directionalLight.castShadow = true
+ghost1.castShadow = true
+ghost2.castShadow = true
+ghost3.castShadow = true
+
+walls.castShadow = true
+walls.receiveShadow = true
+roof.castShadow = true
+floor.receiveShadow = true
+
+for(const grave of graves.children) {
+    grave.castShadow = true
+    grave.receiveShadow = true
+}
+
 /**
  * Animate
  */
@@ -314,6 +347,22 @@ const tick = () =>
     // Timer
     timer.update()
     const elapsedTime = timer.getElapsed()
+
+    // ghost
+    const ghost1Angle = elapsedTime * 0.5 // to slow it down
+    ghost1.position.x = Math.cos(ghost1Angle) * 4
+    ghost1.position.z = Math.sin(ghost1Angle) * 4
+    ghost1.position.y = -Math.sin(ghost1Angle) * Math.sin(ghost1Angle * 2.34) * Math.sin(ghost1Angle * 3.45)
+
+    const ghost2Angle = - elapsedTime * 0.38 // to slow it down, negative to go in different direction
+    ghost2.position.x = Math.cos(ghost2Angle) * 5
+    ghost2.position.z = Math.sin(ghost2Angle) * 5
+    ghost2.position.y = -Math.sin(ghost2Angle) * Math.sin(ghost2Angle * 2.34) * Math.sin(ghost2Angle * 3.45)
+
+    const ghost3Angle = elapsedTime * 0.23 // to slow it down
+    ghost3.position.x = Math.cos(ghost3Angle) * 6
+    ghost3.position.z = Math.sin(ghost3Angle) * 6
+    ghost3.position.y = -Math.sin(ghost3Angle) * Math.sin(ghost3Angle * 2.34) * Math.sin(ghost3Angle * 3.45)
 
     // Update controls
     controls.update()
