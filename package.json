@@ -5,15 +5,22 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/three": "^0.178.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "3.6.2",
     "vite": "^6.2.2",
     "vite-plugin-restart": "^0.4.2"
   },
   "dependencies": {
     "lil-gui": "^0.20.0",
     "three": "^0.174.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
